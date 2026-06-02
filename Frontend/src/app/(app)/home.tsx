@@ -17,7 +17,7 @@ const Home = () => {
         }}>
           <Text>Sign Out</Text>
         </Pressable>
-        <text>Home</text>
+        <Text>Home</Text>
       </View>
     </>
   )

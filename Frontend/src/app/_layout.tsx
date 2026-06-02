@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
-// import type { Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, useColorScheme, View } from 'react-native';
 import { Redirect, Slot } from 'expo-router';
@@ -13,38 +13,36 @@ import Home from './(app)/home';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [session, isCheckingSession] = useAuth();
 
-  if (isCheckingSession) {
+
+  return (
+    <>
+      <AuthProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <AnimatedSplashOverlay />
+          <Slot />
+          <AuthGate />
+        </ThemeProvider>
+      </AuthProvider>
+    </>
+  );
+
+};
+
+
+function AuthGate() {
+  const { session, isCheckingSession } = useAuth();
+  if (isCheckingSession) { // check if not logged in.
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-      </View>
+      <ActivityIndicator size="large" color="#0000ff" />
     );
   }
-
   if (!session) {
-    return <Redirect href="/(auth)/login" />;
+    return <Redirect href="/login" />;
+    // return <Login />;
   }
-  return <Redirect href="/(app)/home" />;
-
-  // return (
-  //   <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-  //     <AnimatedSplashOverlay />
-  //     <AuthProvider>
-  //       {isCheckingSession ? (
-  //         <View style={styles.loadingContainer}>
-  //           <ActivityIndicator />
-  //         </View>
-  //       ) : session ? (
-  //         // <AppTabs />
-  //         <Home />
-  //       ) : (
-  //         <Login />
-  //       )}
-  //     </AuthProvider>
-  //   </ThemeProvider>
-  // );
+  return <Redirect href="/home" />;
+  // return <AppTabs />;
 }
 
 const styles = StyleSheet.create({
