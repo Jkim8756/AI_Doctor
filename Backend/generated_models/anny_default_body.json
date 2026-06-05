@@ -1,0 +1,9 @@
+{
+  "model_type": "default",
+  "rig": "default",
+  "topology": "default",
+  "vertices": 13718,
+  "faces": 13710,
+  "bones": 163,
+  "output": "generated_models\\anny_default_body.glb"
+}

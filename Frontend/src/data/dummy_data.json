@@ -1,0 +1,206 @@
+{
+  "selectedBodyPart": "Chest",
+  "modelPlaceholder": {
+    "title": "Human Body Model",
+    "subtitle": "3D model viewport placeholder"
+  },
+  "bodyParts": [
+    {
+      "name": "Head",
+      "children": [
+        {
+          "name": "Face",
+          "children": [
+            { "name": "Eyes" },
+            { "name": "Nose" },
+            { "name": "Mouth" },
+            { "name": "Ears" }
+          ]
+        },
+        {
+          "name": "Scalp",
+          "children": [
+            { "name": "Forehead" },
+            { "name": "Crown" },
+            { "name": "Back of head" }
+          ]
+        },
+        {
+          "name": "Neck",
+          "children": [
+            { "name": "Front neck" },
+            { "name": "Back neck" },
+            { "name": "Throat" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chest",
+      "children": [
+        {
+          "name": "Upper chest",
+          "children": [
+            { "name": "Left upper chest" },
+            { "name": "Right upper chest" },
+            { "name": "Center upper chest" }
+          ]
+        },
+        {
+          "name": "Lower chest",
+          "children": [
+            { "name": "Left lower chest" },
+            { "name": "Right lower chest" },
+            { "name": "Rib area" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Torso",
+      "children": [
+        {
+          "name": "Abdomen",
+          "children": [
+            { "name": "Upper abdomen" },
+            { "name": "Lower abdomen" },
+            { "name": "Navel area" }
+          ]
+        },
+        {
+          "name": "Back",
+          "children": [
+            { "name": "Upper back" },
+            { "name": "Lower back" },
+            { "name": "Spine" }
+          ]
+        },
+        {
+          "name": "Pelvis",
+          "children": [
+            { "name": "Left hip" },
+            { "name": "Right hip" },
+            { "name": "Groin" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Left arm",
+      "children": [
+        {
+          "name": "Left upper arm",
+          "children": [
+            { "name": "Left shoulder" },
+            { "name": "Left bicep" },
+            { "name": "Left tricep" }
+          ]
+        },
+        {
+          "name": "Left forearm",
+          "children": [
+            { "name": "Left wrist" },
+            { "name": "Left inner forearm" },
+            { "name": "Left outer forearm" }
+          ]
+        },
+        {
+          "name": "Left hand",
+          "children": [
+            { "name": "Left palm" },
+            { "name": "Left fingers" },
+            { "name": "Left thumb" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Right arm",
+      "children": [
+        {
+          "name": "Right upper arm",
+          "children": [
+            { "name": "Right shoulder" },
+            { "name": "Right bicep" },
+            { "name": "Right tricep" }
+          ]
+        },
+        {
+          "name": "Right forearm",
+          "children": [
+            { "name": "Right wrist" },
+            { "name": "Right inner forearm" },
+            { "name": "Right outer forearm" }
+          ]
+        },
+        {
+          "name": "Right hand",
+          "children": [
+            { "name": "Right palm" },
+            { "name": "Right fingers" },
+            { "name": "Right thumb" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Left leg",
+      "children": [
+        {
+          "name": "Left upper leg",
+          "children": [
+            { "name": "Left thigh" },
+            { "name": "Left knee" },
+            { "name": "Left hamstring" }
+          ]
+        },
+        {
+          "name": "Left lower leg",
+          "children": [
+            { "name": "Left shin" },
+            { "name": "Left calf" },
+            { "name": "Left ankle" }
+          ]
+        },
+        {
+          "name": "Left foot",
+          "children": [
+            { "name": "Left heel" },
+            { "name": "Left arch" },
+            { "name": "Left toes" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Right leg",
+      "children": [
+        {
+          "name": "Right upper leg",
+          "children": [
+            { "name": "Right thigh" },
+            { "name": "Right knee" },
+            { "name": "Right hamstring" }
+          ]
+        },
+        {
+          "name": "Right lower leg",
+          "children": [
+            { "name": "Right shin" },
+            { "name": "Right calf" },
+            { "name": "Right ankle" }
+          ]
+        },
+        {
+          "name": "Right foot",
+          "children": [
+            { "name": "Right heel" },
+            { "name": "Right arch" },
+            { "name": "Right toes" }
+          ]
+        }
+      ]
+    }
+  ],
+  "chatPlaceholder": "Describe what you are feeling..."
+}

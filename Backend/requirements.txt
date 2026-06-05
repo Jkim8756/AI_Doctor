@@ -1,0 +1,7 @@
+anny==0.3.1
+torch>=2.0.0
+roma>=1.5.2.1
+trimesh>=4.0.0
+numpy>=1.24.0
+pyyaml>=6.0.0
+pillow>=10.0.0
