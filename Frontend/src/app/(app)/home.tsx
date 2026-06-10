@@ -1,7 +1,8 @@
 import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 import dummyData from '@/data/dummy_data.json';
 import { useState, useEffect } from 'react';
-import HumanBodyModel from '../../components/body-modeling'
+import HumanBodyModel from '@/components/body-modeling'
+import Chat from '@/components/chat';
 
 const selectedBodyPart = dummyData.selectedBodyPart;
 // const selectedPartData = dummyData.bodyParts.find((part) => part.name === selectedBodyPart);
@@ -13,9 +14,11 @@ const Home = () => {
     <View style={styles.screen}>
       {/* <BodyModel majorBodyPart={majorBodyPart}
         setMajorBodyPart={setMajorBodyPart} /> */}
-      <HumanBodyModel onSelectBodyPart={setMajorBodyPart} />
+      <View style={styles.modelViewport}>
+        <HumanBodyModel onSelectBodyPart={setMajorBodyPart} />
+      </View>
       <BodyDetailsList majorBodyPart={majorBodyPart} />
-      <ChatInput />
+      <Chat />
     </View >
   );
 };
@@ -94,21 +97,6 @@ const BodyDetailsList = ({ majorBodyPart }: { majorBodyPart: string }) => {
   );
 };
 
-const ChatInput = () => {
-  return (
-    <>
-      <View style={styles.chatSection}>
-        <TextInput
-          style={styles.chatInput}
-          placeholder={dummyData.chatPlaceholder}
-          placeholderTextColor="#94a3b8"
-          multiline
-        />
-      </View>
-    </>
-  )
-};
-
 
 const styles = StyleSheet.create({
   screen: {
@@ -118,25 +106,20 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   modelSection: {
-    flex: 1,
+    height: 300,
     minHeight: 320,
     alignItems: 'center',
     justifyContent: 'center',
   },
   modelViewport: {
     width: '100%',
-    maxWidth: 720,
-    minHeight: 360,
-    flex: 1,
+    height: 300,
     borderWidth: 1,
     borderColor: '#94a3b8',
     borderStyle: 'dashed',
     borderRadius: 8,
     backgroundColor: '#eef2ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    padding: 18,
+    overflow: 'hidden',
   },
   modelTitle: {
     color: '#0f172a',
@@ -154,7 +137,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   detailsSection: {
-    minHeight: 240,
+    minHeight: 160,
+    maxHeight: 220,
     flexDirection: 'row',
     alignItems: 'flex-start',
     backgroundColor: '#ffffff',
@@ -218,22 +202,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: '600',
   },
-  chatSection: {
-    minHeight: 88,
-  },
-  chatInput: {
-    minHeight: 72,
-    maxHeight: 140,
-    borderWidth: 1,
-    borderColor: '#cbd5e1',
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: '#0f172a',
-    fontSize: 15,
-    textAlignVertical: 'top',
-  },
+
   bodyPartButtonGroup: {
     flexDirection: 'row',
     flexWrap: 'wrap',
