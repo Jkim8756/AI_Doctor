@@ -3,8 +3,13 @@ import { View, TextInput, StyleSheet, Pressable, Text, ScrollView } from 'react-
 import { useAuth } from '@/context/authContext'
 import { supabase } from '@/lib/supabase'
 
+const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || "http://localhost:8001").replace(/\/$/, "");
+
 type ChatMessage = {
     user_id: string;
+    sender_id?: string | null;
+    sender_type?: "user" | "assistant" | null;
+    receiver_id?: string | null;
     created_at: string;
     chat_id: number;
     message: string;
@@ -73,8 +78,7 @@ const Chat = () => {
     async function loadChatLog() {
         const { data, error } = await supabase
             .from("chat")
-            .select("created_at, user_id, chat_id, message, session_id, isUser")
-            .eq("user_id", userId)
+            .select("created_at, user_id, sender_id, sender_type, receiver_id, chat_id, message, session_id, isUser")
             .eq("session_id", sessionId)
             .order("created_at", { ascending: true });
 
@@ -160,28 +164,32 @@ const Chat = () => {
                         <Text style={styles.emptyLogText}>No messages in this session yet.</Text>
                     </View>
                 ) : (
-                    chatMessages.map((chat) => (
-                        <View
-                            key={chat.chat_id}
-                            style={[
-                                styles.messageRow,
-                                chat.isUser ? styles.userMessageRow : styles.aiMessageRow,
-                            ]}>
+                    chatMessages.map((chat) => {
+                        const isUserMessage = chat.sender_type ? chat.sender_type === "user" : chat.isUser;
+
+                        return (
                             <View
+                                key={chat.chat_id}
                                 style={[
-                                    styles.messageBubble,
-                                    chat.isUser ? styles.userBubble : styles.aiBubble,
+                                    styles.messageRow,
+                                    isUserMessage ? styles.userMessageRow : styles.aiMessageRow,
                                 ]}>
-                                <Text
+                                <View
                                     style={[
-                                        styles.messageText,
-                                        chat.isUser ? styles.userMessageText : styles.aiMessageText,
+                                        styles.messageBubble,
+                                        isUserMessage ? styles.userBubble : styles.aiBubble,
                                     ]}>
-                                    {chat.message}
-                                </Text>
+                                    <Text
+                                        style={[
+                                            styles.messageText,
+                                            isUserMessage ? styles.userMessageText : styles.aiMessageText,
+                                        ]}>
+                                        {chat.message}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
-                    ))
+                        );
+                    })
                 )}
             </ScrollView>
 
@@ -191,7 +199,9 @@ const Chat = () => {
                 userId={userId}
                 onMessageCreated={(message) => setChatMessages((previous) => [...previous, message])}
                 onMessageReplaced={(chatId, message) => setChatMessages((previous) => (
-                    previous.map((chat) => chat.chat_id === chatId ? message : chat)
+                    previous.some((chat) => chat.chat_id === chatId)
+                        ? previous.map((chat) => chat.chat_id === chatId ? message : chat)
+                        : [...previous, message]
                 ))}
             />
         </View>
@@ -269,10 +279,12 @@ const Chatbox = (
                 .insert({
                     session_id: activeSessionId,
                     user_id: userId,
+                    sender_id: userId,
+                    sender_type: "user",
                     isUser: true,
                     message: trimmedMessage,
                 })
-                .select("created_at, user_id, chat_id, message, session_id, isUser")
+                .select("created_at, user_id, sender_id, sender_type, receiver_id, chat_id, message, session_id, isUser")
                 .single();
 
             if (error) {
@@ -295,7 +307,7 @@ const Chatbox = (
 
             onMessageCreated(pendingAiMessage);
 
-            const aiResult = await fetch("http://localhost:8001/chat/respond-latest", {
+            const aiResult = await fetch(`${BACKEND_URL}/chat/respond-latest`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

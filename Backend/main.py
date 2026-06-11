@@ -55,9 +55,9 @@ def get_supabase() -> Client:
 def latest_user_message(supabase: Client, request: LatestSessionRequest) -> Optional[dict]:
     response = (
         supabase.table("chat")
-        .select("created_at, user_id, chat_id, message, session_id, isUser")
+        .select("created_at, user_id, sender_id, sender_type, receiver_id, chat_id, message, session_id, isUser")
         .eq("session_id", request.session_id)
-        .eq("isUser", True)
+        .eq("sender_type", "user")
         .order("created_at", desc=True)
         .limit(1)
         .execute()
@@ -69,10 +69,10 @@ def latest_user_message(supabase: Client, request: LatestSessionRequest) -> Opti
 def latest_ai_message(supabase: Client, request: LatestSessionRequest) -> Optional[dict]:
     response = (
         supabase.table("chat")
-        .select("created_at, user_id, chat_id, message, session_id, isUser")
-        .eq("user_id", AI_UID)
+        .select("created_at, user_id, sender_id, sender_type, receiver_id, chat_id, message, session_id, isUser")
+        .eq("sender_id", AI_UID)
         .eq("session_id", request.session_id)
-        .eq("isUser", False)
+        .eq("sender_type", "assistant")
         .order("created_at", desc=True)
         .limit(1)
         .execute()
@@ -91,12 +91,14 @@ def insert_ai_message(
         .insert(
             {
                 "user_id": AI_UID,
+                "sender_id": AI_UID,
+                "sender_type": "assistant",
                 "session_id": request.session_id,
                 "isUser": False,
                 "message": message,
             }
         )
-        .select("created_at, user_id, chat_id, message, session_id, isUser")
+        .select("created_at, user_id, sender_id, sender_type, receiver_id, chat_id, message, session_id, isUser")
         .execute()
     )
 

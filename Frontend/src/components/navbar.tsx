@@ -29,9 +29,9 @@ const navbarStyles = StyleSheet.create({
     minHeight: 64,
     paddingHorizontal: 20,
     paddingVertical: 12,
-    backgroundColor: "#0F172A",
+    backgroundColor: "#1e3a8a",
     borderBottomWidth: 1,
-    borderBottomColor: "#1E293B",
+    borderBottomColor: "#bfdbfe",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -39,7 +39,7 @@ const navbarStyles = StyleSheet.create({
   },
 
   brand: {
-    color: "#F8FAFC",
+    color: "#ffffff",
     fontSize: 20,
     fontWeight: "800",
   },
@@ -59,11 +59,11 @@ const navbarStyles = StyleSheet.create({
   },
 
   navButtonActive: {
-    backgroundColor: "#1E293B",
+    backgroundColor: "#2563eb",
   },
 
   navText: {
-    color: "#CBD5E1",
+    color: "#dbeafe",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -76,13 +76,13 @@ const navbarStyles = StyleSheet.create({
     minHeight: 40,
     paddingHorizontal: 14,
     borderRadius: 6,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
   },
 
   signOutText: {
-    color: "#FFFFFF",
+    color: "#1e3a8a",
     fontSize: 14,
     fontWeight: "700",
   },

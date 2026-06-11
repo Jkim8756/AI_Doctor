@@ -19,16 +19,16 @@ export default function Applayout() {
 export const appStyles = StyleSheet.create({
     appRoot: {
         flex: 1,
-        backgroundColor: "#406a94",
+        backgroundColor: "#eaf2ff",
     },
 
     navbar: {
         minHeight: 64,
         paddingHorizontal: 20,
         paddingVertical: 12,
-        backgroundColor: "#0F172A",
+        backgroundColor: "#1e3a8a",
         borderBottomWidth: 1,
-        borderBottomColor: "#1E293B",
+        borderBottomColor: "#bfdbfe",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -36,7 +36,7 @@ export const appStyles = StyleSheet.create({
     },
 
     brand: {
-        color: "#F8FAFC",
+        color: "#ffffff",
         fontSize: 20,
         fontWeight: "800",
     },
@@ -56,11 +56,11 @@ export const appStyles = StyleSheet.create({
     },
 
     navButtonActive: {
-        backgroundColor: "#1E293B",
+        backgroundColor: "#2563eb",
     },
 
     navText: {
-        color: "#CBD5E1",
+        color: "#dbeafe",
         fontSize: 14,
         fontWeight: "600",
     },
@@ -88,6 +88,7 @@ export const appStyles = StyleSheet.create({
         flex: 1,
         padding: 24,
         gap: 20,
+        backgroundColor: "#eaf2ff",
     },
 
     pageHeader: {
@@ -95,7 +96,7 @@ export const appStyles = StyleSheet.create({
     },
 
     eyebrow: {
-        color: "#2563EB",
+        color: "#2563eb",
         fontSize: 13,
         fontWeight: "700",
         textTransform: "uppercase",
@@ -126,7 +127,7 @@ export const appStyles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: "#FFFFFF",
         borderWidth: 1,
-        borderColor: "#E2E8F0",
+        borderColor: "#d7e2ea",
         gap: 8,
     },
 
@@ -147,7 +148,7 @@ export const appStyles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: "#FFFFFF",
         borderWidth: 1,
-        borderColor: "#E2E8F0",
+        borderColor: "#d7e2ea",
         gap: 12,
     },
 

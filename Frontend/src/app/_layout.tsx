@@ -27,7 +27,9 @@ function AuthGate() {
   const { session, isCheckingSession } = useAuth();
   if (isCheckingSession) { // check if not logged in.
     return (
-      <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2563eb" />
+      </View>
     );
   }
   if (!session) {
@@ -43,5 +45,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#eaf2ff',
   },
 });
