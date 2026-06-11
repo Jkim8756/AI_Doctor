@@ -6,11 +6,7 @@ SSO, Sign up
 Mesh optimization
 
 3. Chat 
-Create new session
 Delete session 
-change session 
-AI-Implementation
-    AI will refer to the selected area. instruct user to select the body area or allow to type to select for them
 export chat history to csv 
 uploade Image 
 

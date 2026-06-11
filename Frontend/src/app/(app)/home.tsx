@@ -3,22 +3,45 @@ import dummyData from '@/data/dummy_data.json';
 import { useState, useEffect } from 'react';
 import HumanBodyModel from '@/components/body-modeling'
 import Chat from '@/components/chat';
+import AIAgent from '@/components/openai';
 
 const selectedBodyPart = dummyData.selectedBodyPart;
 // const selectedPartData = dummyData.bodyParts.find((part) => part.name === selectedBodyPart);
 
 const Home = () => {
   const [majorBodyPart, setMajorBodyPart] = useState(dummyData.selectedBodyPart);
+  const [isChatExpanded, setIsChatExpanded] = useState(false);
 
   return (
     <View style={styles.screen}>
-      {/* <BodyModel majorBodyPart={majorBodyPart}
-        setMajorBodyPart={setMajorBodyPart} /> */}
-      <View style={styles.modelViewport}>
-        <HumanBodyModel onSelectBodyPart={setMajorBodyPart} />
+      <View style={styles.workspacePanel}>
+        <View style={styles.modelViewport}>
+          <HumanBodyModel onSelectBodyPart={setMajorBodyPart} />
+        </View>
+        <BodyDetailsList majorBodyPart={majorBodyPart} />
+        {/* <AIAgent /> */}
       </View>
-      <BodyDetailsList majorBodyPart={majorBodyPart} />
-      <Chat />
+
+      <View style={[styles.chatPanel, !isChatExpanded && styles.chatPanelCollapsed]}>
+        {isChatExpanded ? (
+          <>
+            <Pressable
+              style={styles.chatCollapseButton}
+              onPress={() => setIsChatExpanded(false)}
+            >
+              <Text style={styles.chatCollapseButtonText}>Collapse Chat</Text>
+            </Pressable>
+            <Chat />
+          </>
+        ) : (
+          <Pressable
+            style={styles.chatExpandButton}
+            onPress={() => setIsChatExpanded(true)}
+          >
+            <Text style={styles.chatExpandButtonText}>Open Chat</Text>
+          </Pressable>
+        )}
+      </View>
     </View >
   );
 };
@@ -103,7 +126,52 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8fafc',
     padding: 20,
+    flexDirection: 'row',
     gap: 16,
+  },
+  workspacePanel: {
+    flex: 1.15,
+    minWidth: 0,
+    gap: 16,
+  },
+  chatPanel: {
+    flex: 0.85,
+    minWidth: 360,
+    gap: 10,
+  },
+  chatPanelCollapsed: {
+    flex: 0,
+    minWidth: 132,
+    alignItems: 'stretch',
+  },
+  chatExpandButton: {
+    minHeight: 44,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#0f172a',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chatExpandButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  chatCollapseButton: {
+    alignSelf: 'flex-end',
+    minHeight: 36,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chatCollapseButtonText: {
+    color: '#334155',
+    fontSize: 14,
+    fontWeight: '700',
   },
   modelSection: {
     height: 300,
@@ -113,7 +181,8 @@ const styles = StyleSheet.create({
   },
   modelViewport: {
     width: '100%',
-    height: 300,
+    flex: 1,
+    minHeight: 360,
     borderWidth: 1,
     borderColor: '#94a3b8',
     borderStyle: 'dashed',

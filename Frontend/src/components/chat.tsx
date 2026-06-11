@@ -3,23 +3,25 @@ import { View, TextInput, StyleSheet, Pressable, Text, ScrollView } from 'react-
 import { useAuth } from '@/context/authContext'
 import { supabase } from '@/lib/supabase'
 
+type ChatMessage = {
+    user_id: string;
+    created_at: string;
+    chat_id: number;
+    message: string;
+    session_id: number;
+    isUser: boolean;
+    isPending?: boolean;
+}
+
+type ChatSession = {
+    user_id: string;
+    created_at: string;
+    session_id: number;
+}
 
 const Chat = () => {
     const [sessionId, setSessionId] = useState<number | null>(null);
     const [isSessionMenuOpen, setIsSessionMenuOpen] = useState(false);
-    type ChatMessage = {
-        user_id: string;
-        created_at: string;
-        chat_id: number;
-        message: string;
-        session_id: number;
-        isUser: boolean;
-    }
-    type ChatSession = {
-        user_id: string;
-        created_at: string;
-        session_id: number;
-    }
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [sessions, setSessions] = useState<ChatSession[]>([]);
 
@@ -152,7 +154,6 @@ const Chat = () => {
                     </Pressable>
                 </View>
             </View>
-
             <ScrollView style={styles.chatLog} contentContainerStyle={styles.chatLogContent}>
                 {chatMessages.length === 0 ? (
                     <View style={styles.emptyLog}>
@@ -188,17 +189,23 @@ const Chat = () => {
                 sessionId={sessionId}
                 setSessionId={setSessionId}
                 userId={userId}
+                onMessageCreated={(message) => setChatMessages((previous) => [...previous, message])}
+                onMessageReplaced={(chatId, message) => setChatMessages((previous) => (
+                    previous.map((chat) => chat.chat_id === chatId ? message : chat)
+                ))}
             />
         </View>
     );
 }
 
 const Chatbox = (
-    { userId, sessionId, setSessionId }
+    { userId, sessionId, setSessionId, onMessageCreated, onMessageReplaced }
         : {
             userId: string | undefined;
             sessionId: number | null;
             setSessionId: Dispatch<SetStateAction<number | null>>;
+            onMessageCreated: (message: ChatMessage) => void;
+            onMessageReplaced: (chatId: number, message: ChatMessage) => void;
         }
 ) => {
     const [messages, setMessages] = useState("")
@@ -208,10 +215,7 @@ const Chatbox = (
     //check user
     //check chat session
 
-
     async function createSession() {
-        // console.log("userid: " + userId)
-        // console.log("session insert userId:", userId);
         const { data, error } = await supabase
             .from("chat_session")
             .insert({
@@ -225,13 +229,17 @@ const Chatbox = (
             return null;
         }
 
-        // console.log(data.session_id);
-        return data.session_id  //need for this instance
+        return data.session_id;
     }
 
     async function SendMessage() {
         if (isSending) {
             console.log("previous message is still sending, please wait")
+            return;
+        }
+
+        if (!userId) {
+            console.log("user is not logged in")
             return;
         }
 
@@ -242,8 +250,10 @@ const Chatbox = (
 
         setIsSending(true);
 
+        let pendingAiMessage: ChatMessage | null = null;
+        let activeSessionId = sessionId;
+
         try {
-            let activeSessionId = sessionId;
             if (!activeSessionId) {
                 activeSessionId = await createSession();
 
@@ -251,35 +261,88 @@ const Chatbox = (
                     return;
                 }
 
-                setSessionId(activeSessionId); // set state for later
+                setSessionId(activeSessionId);
             }
 
-            console.log("after" + activeSessionId)
-            // at this point, auth, user, session are all verified
-
-
-            //send to db
             const { data, error } = await supabase
                 .from("chat")
                 .insert({
                     session_id: activeSessionId,
                     user_id: userId,
-                    isUser: true, //false if AI
+                    isUser: true,
                     message: trimmedMessage,
                 })
-                .select()
+                .select("created_at, user_id, chat_id, message, session_id, isUser")
                 .single();
-
 
             if (error) {
                 console.log(error.message)
-                setIsSending(false);
                 return;
             }
-            console.log(data)
+
+            onMessageCreated(data)
             setMessages("")
+
+            pendingAiMessage = {
+                chat_id: -Date.now(),
+                created_at: new Date().toISOString(),
+                user_id: "ai-pending",
+                session_id: activeSessionId,
+                isUser: false,
+                message: "AI is thinking...",
+                isPending: true,
+            };
+
+            onMessageCreated(pendingAiMessage);
+
+            const aiResult = await fetch("http://localhost:8001/chat/respond-latest", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    session_id: activeSessionId,
+                }),
+            });
+
+            if (!aiResult.ok) {
+                console.log(await aiResult.text());
+                onMessageReplaced(pendingAiMessage.chat_id, {
+                    ...pendingAiMessage,
+                    message: "AI response failed. Check the backend terminal.",
+                    isPending: false,
+                });
+                return;
+            }
+
+            const aiData = await aiResult.json();
+            if (aiData.ai_message) {
+                onMessageReplaced(pendingAiMessage.chat_id, aiData.ai_message);
+            } else {
+                onMessageReplaced(pendingAiMessage.chat_id, {
+                    ...pendingAiMessage,
+                    message: "AI response finished, but no message was returned.",
+                    isPending: false,
+                });
+            }
         } catch (error) {
             console.log(error)
+            const errorMessage: ChatMessage = {
+                ...(pendingAiMessage ?? {
+                    chat_id: -Date.now(),
+                    created_at: new Date().toISOString(),
+                    user_id: "ai-error",
+                    session_id: activeSessionId ?? 0,
+                    isUser: false,
+                    message: "",
+                }),
+                message: "AI response request failed. Check backend connection.",
+                isPending: false,
+            };
+
+            if (pendingAiMessage) {
+                onMessageReplaced(pendingAiMessage.chat_id, errorMessage);
+            } else {
+                onMessageCreated(errorMessage);
+            }
         } finally {
             setIsSending(false);
         }
